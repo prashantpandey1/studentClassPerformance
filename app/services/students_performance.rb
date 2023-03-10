@@ -2,26 +2,23 @@
 
 class StudentsPerformance
   def initialize(quiz_type, page_num = 1)
-    @users = User.includes(quizzes: :responses).page(page_num)
+    @page_num = page_num
     @quiz_type = quiz_type
   end
 
   def get_student_details
-    @details = []
-    @users.each do |user|
-      @quizzes = if @quiz_type
-                   user.quizzes.where(quiz_type: @quiz_type)
-                 else
-                   user.quizzes
-                 end
-      @responses = Response.where(quiz_id: @quizzes.pluck(:id))
-      @correct_responses = Response.where(quiz_id: @quizzes.pluck(:id), correct: true)
-      @correct_avg_percentage = get_average(@correct_responses.length, @responses.length)
-      data = { user_id: user.id, first_name: user.first_name, last_name: user.last_name,
-               correct_avg_percentage: @correct_avg_percentage }
-      @details << data
+    users = User.page(@page_num)
+    users = users.where(quizzes: { quiz_type: @quiz_type }) if @quiz_type.present?
+    users.eager_load(:responses).collect do |user|
+      responses = user.responses.to_a
+      correct_responses = responses.count(&:correct?)
+      {
+        user_id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        correct_avg_percentage: get_average(correct_responses, responses.length)
+      }
     end
-    @details
   end
 
   def get_average(correct_responses, total_responses)

@@ -12,5 +12,9 @@ Rails.application.routes.draw do
     resources :class_performance, only: [:index]
   end
 
+  get 'all_students', action: :index, controller: 'students'
+  get 'all_students/:quiz_type', action: :index, controller: 'students'
   get 'students/:quiz_type', action: :index, controller: 'students'
+  get 'class_information', action: :index, controller: 'class_performance'
+  get 'subject_performance', action: :index, controller: 'subjects'
 end

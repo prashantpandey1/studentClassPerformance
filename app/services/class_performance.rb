@@ -2,27 +2,28 @@
 
 class ClassPerformance
   def initialize
-    @users = User.includes(quizzes: :responses)
+    @quizzes = Quiz.eager_load(:responses)
   end
 
   def get_class_performance
-    @performance_data = []
-    @users.each do |user|
-      @total_quiz_taken = user.quizzes
-      @answered_quizzes = @total_quiz_taken.where(completed: true)
-      @test_quizzes = @total_quiz_taken.where(quiz_type: 'test')
-      @practice_quizzes = @total_quiz_taken.where(quiz_type: 'practice')
-      @test_responses = Response.where(quiz_id: @test_quizzes.pluck(:id))
-      @practice_responses = Response.where(quiz_id: @practice_quizzes.pluck(:id))
-      @test_correct_responses = Response.where(quiz_id: @test_quizzes.pluck(:id), correct: true)
-      @practice_correct_responses = Response.where(quiz_id: @practice_quizzes.pluck(:id), correct: true)
-      @user_test_avg = get_average(@test_correct_responses.length, @test_responses.length)
-      @user_practice_avg = get_average(@practice_correct_responses.length, @practice_responses.length)
-      data = { user_id: user.id, first_name: user.first_name, last_name: user.last_name,
-               user_test_avg: @user_test_avg, user_practice_avg: @user_practice_avg, total_quiz_taken: @total_quiz_taken.length, answered_quizzes: @answered_quizzes.length }
-      @performance_data << data
+    class_performance = {
+      total_quizzes: @quizzes.length,
+      total_quizzes_answered: @quizzes.count(&:completed?)
+    }
+    quiz_types = ["test", "practice"]
+    quiz_types.each do |quiz_type|
+      quizzes = @quizzes.where(quiz_type: quiz_type)
+      quizzes.each do |quiz|
+        responses = quiz.responses.to_a
+        correct_responses = responses.count(&:correct?)
+        if (quiz_type == 'test')
+          class_performance[:test_avg_percentage] = get_average(correct_responses, responses.length)
+        elsif (quiz_type == 'practice')
+          class_performance[:practice_avg_percentage] = get_average(correct_responses, responses.length)
+        end
+      end
     end
-    @performance_data
+    class_performance
   end
 
   def get_average(correct_responses, total_responses)
