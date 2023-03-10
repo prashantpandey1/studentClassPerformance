@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class SubjectsPerformance
+  include PerformanceAverage
   def initialize
     @Questions = Question.eager_load(:quiz)
     @Quiz = Quiz.eager_load(:responses)
@@ -37,9 +38,5 @@ class SubjectsPerformance
      user_sub_details[subject] = subject_data
     end
     user_sub_details
-  end
-
-  def get_average(correct_responses, total_responses)
-    (correct_responses * 100).to_f / total_responses
   end
 end

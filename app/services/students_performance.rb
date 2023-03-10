@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class StudentsPerformance
+  include PerformanceAverage
   def initialize(quiz_type, page_num = 1)
     @page_num = page_num
     @quiz_type = quiz_type
@@ -19,9 +20,5 @@ class StudentsPerformance
         correct_avg_percentage: get_average(correct_responses, responses.length)
       }
     end
-  end
-
-  def get_average(correct_responses, total_responses)
-    (correct_responses * 100).to_f / total_responses
   end
 end

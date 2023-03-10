@@ -1,37 +1,37 @@
 # frozen_string_literal: true
 
 class ClassPerformance
+  include PerformanceAverage
+
   def initialize
-    @quizzes = Quiz.eager_load(:responses)
+    @quizzes = Quiz.eager_load(:responses).where(completed: 1)
   end
 
   def get_class_performance
-    class_performance = {
-      total_quizzes_taken: @quizzes.count(&:completed?)
+    practice_quizes = @quizzes.select(&:practice?)
+    test_quizzes = @quizzes.select(&:test?)
+    responses = @quizzes.collect(&:responses).flatten
+    correct_responses = responses.select(&:correct?)
+    pq_responses = practice_quizes.collect(&:responses).flatten
+    pq_correct_responses = pq_responses.select(&:correct?)
+    tq_responses = test_quizzes.collect(&:responses).flatten
+    tq_correct_responses = tq_responses.select(&:correct?)
+
+    {
+      total_quizzes_complted: @quizzes.count(&:completed?),
+      total_practice_quizes_completed: practice_quizes.length,
+      total_test_quizes_completed: test_quizzes.length,
+      total_responses: responses.length,
+      total_correct_responses: correct_responses.length,
+      total_practice_responses: pq_responses.length,
+      total_practice_correct_responses: pq_correct_responses.length,
+      total_test_responses: tq_responses.length,
+      total_test_correct_responses: tq_correct_responses.length,
+      total_average_percentage: get_average(correct_responses.length, responses.length),
+      practice_average_percentage: get_average(pq_correct_responses.length, pq_responses.length),
+      test_average_percentage: get_average(tq_correct_responses.length, tq_responses.length)
     }
-    quiz_types = ["test", "practice"]
-    quiz_data = {}
-    quiz_types.each do |quiz_type|
-      quizzes = @quizzes.where(quiz_type: quiz_type)
-      
-      quizzes.each do |quiz|
-        responses = quiz.responses.to_a
-        correct_responses = responses.count(&:correct?)
-        quiz_data[quiz_type] = {}
-        quiz_data[quiz_type][:total_quizzes] = quiz_data[quiz_type][:total_quizzes] ? quiz_data[quiz_type][:total_quizzes] + responses.length : responses.length
-        quiz_data[quiz_type][:total_quizzes_corrected] = quiz_data[quiz_type][:total_quizzes_corrected] ? quiz_data[quiz_type][:total_quizzes_corrected] + correct_responses : correct_responses
-      end
-      if quiz_type == "test"
-       class_performance[:test_avg_percentage] = get_average(quiz_data[quiz_type][:total_quizzes_corrected], quiz_data[quiz_type][:total_quizzes])
-      elsif quiz_type == "practice"
-       class_performance[:practice_avg_percentage] = get_average(quiz_data[quiz_type][:total_quizzes_corrected], quiz_data[quiz_type][:total_quizzes])
-      end
-    end
-    class_performance[:total_quizzes_answered] = quiz_data["test"][:total_quizzes] + quiz_data["practice"][:total_quizzes]
-    class_performance
   end
 
-  def get_average(correct_responses, total_responses)
-    (correct_responses * 100).to_f / total_responses
-  end
+ 
 end
