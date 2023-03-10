@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class StudentsControllerTest < ActionDispatch::IntegrationTest
+class ClassPerformanceControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

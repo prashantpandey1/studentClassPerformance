@@ -8,6 +8,9 @@ Rails.application.routes.draw do
 
   constraints format: :json do
     resources :students, only: [:index]
+    resources :subjects, only: [:index]
+    resources :class_performance, only: [:index]
   end
 
+  get 'students/:quiz_type', action: :index, controller: 'students'
 end

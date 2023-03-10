@@ -10,6 +10,8 @@
 user_json = File.read(Rails.root.join('db/data/users.json'))
 user_hash = JSON.parse(user_json)
 user_hash.each do |data|
+  next if User.exists?(id: data['id'])
+
   User.create!(
     id: data['id'],
     first_name: data['first_name'],
@@ -18,13 +20,15 @@ user_hash.each do |data|
     sign_up_date: data['sign_up_date'],
     created_at: data['created_at'],
     updated_at: data['updated_at']
-  ) unless User.exists?(id: data['id'])
+  )
 end
 
 # Read the data from Quiz json file and update in Quiz table
 quiz_json = File.read(Rails.root.join('db/data/quizzes.json'))
 quiz_hash = JSON.parse(quiz_json)
 quiz_hash.each do |data|
+  next if Quiz.exists?(id: data['id'])
+
   Quiz.create!(
     id: data['id'],
     name: data['name'],
@@ -33,13 +37,15 @@ quiz_hash.each do |data|
     user_id: data['user_id'],
     created_at: data['created_at'],
     updated_at: data['updated_at']
-  ) unless Quiz.exists?(id: data['id'])
+  )
 end
 
 # Read the data from Question json file and update in Question table
 question_json = File.read(Rails.root.join('db/data/questions.json'))
 question_hash = JSON.parse(question_json)
 question_hash.each do |data|
+  next if Question.exists?(id: data['id'])
+
   Question.create!(
     id: data['id'],
     text: data['text'],
@@ -47,13 +53,15 @@ question_hash.each do |data|
     correct_answer: data['correct_answer'],
     created_at: data['created_at'],
     updated_at: data['updated_at']
-  ) unless Question.exists?(id: data['id'])
+  )
 end
 
 # Read the data from Response json file and update in Response table
 response_json = File.read(Rails.root.join('db/data/responses.json'))
 response_hash = JSON.parse(response_json)
 response_hash.each do |data|
+  next if Response.exists?(id: data['id'])
+
   Response.create!(
     id: data['id'],
     correct: data['correct'],
@@ -61,5 +69,5 @@ response_hash.each do |data|
     question_id: data['question_id'],
     created_at: data['created_at'],
     updated_at: data['updated_at']
-  ) unless Response.exists?(id: data['id'])
+  )
 end

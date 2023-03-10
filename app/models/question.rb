@@ -2,5 +2,5 @@
 
 # Question Model
 class Question < ApplicationRecord
-  has_many :responses, dependent: :destroy
+  has_one :response, dependent: :destroy
 end
