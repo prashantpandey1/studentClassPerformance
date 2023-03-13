@@ -7,14 +7,14 @@ Rails.application.routes.draw do
   # root "articles#index"
 
   constraints format: :json do
-    resources :students, only: [:index]
-    resources :subjects, only: [:index]
+    resources :students_performance, only: [:index]
+    resources :subjects_performance, only: [:index]
     resources :class_performance, only: [:index]
   end
 
-  get 'all_students', action: :index, controller: 'students'
-  get 'all_students/:quiz_type', action: :index, controller: 'students'
-  get 'students/:quiz_type', action: :index, controller: 'students'
+  get 'all_students', action: :index, controller: 'students_performance'
+  get 'all_students/:quiz_type', action: :index, controller: 'students_performance'
+  get 'students/:quiz_type', action: :index, controller: 'students_performance'
   get 'class_information', action: :index, controller: 'class_performance'
-  get 'subject_performance', action: :index, controller: 'subjects'
+  get 'subject_performance', action: :index, controller: 'subjects_performance'
 end

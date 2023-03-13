@@ -7,7 +7,7 @@ class ClassPerformance
     @quizzes = Quiz.eager_load(:responses).where(completed: 1)
   end
 
-  def get_class_performance
+  def analyze
     practice_quizes = @quizzes.select(&:practice?)
     test_quizzes = @quizzes.select(&:test?)
     responses = @quizzes.collect(&:responses).flatten
@@ -32,6 +32,4 @@ class ClassPerformance
       test_average_percentage: get_average(tq_correct_responses.length, tq_responses.length)
     }
   end
-
- 
 end

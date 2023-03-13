@@ -7,7 +7,7 @@ class StudentsPerformance
     @quiz_type = quiz_type
   end
 
-  def get_student_details
+  def analyze
     users = User.page(@page_num)
     users = users.where(quizzes: { quiz_type: @quiz_type }) if @quiz_type.present?
     users.eager_load(:responses).collect do |user|

@@ -2,7 +2,6 @@
 
 class ClassPerformanceController < ApplicationController
   def index
-    @class_performance = ClassPerformance.new.get_class_performance
-    render json: @class_performance
+    render json: ClassPerformance.new.analyze
   end
 end
