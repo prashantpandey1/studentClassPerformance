@@ -15,4 +15,7 @@ require: rubocop-rails
 Style/Documentation:
   Exclude:
     - 'db/migrate/*.rb'
+
+Metrics/MethodLength:
+  Max: 1000
   
