@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# ClassPerformance
 class ClassPerformance
   include PerformanceAverage
 

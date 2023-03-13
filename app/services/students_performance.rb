@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# StudentsPerformance
 class StudentsPerformance
   include PerformanceAverage
   def initialize(quiz_type, page_num = 1)
