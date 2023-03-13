@@ -18,8 +18,8 @@ class SubjectsPerformance
       response_details.each do |response|
         user = @Quiz.find_by(id: response.first).user_id.to_s
         if data[user].present?
-          data[user][:total_count] += 1
-          data[user][:correct_answer_count] = response.last == 1 ? data[user][:correct_answer_count] + 1 : 0
+           data[user][:total_count] += 1
+           data[user][:correct_answer_count] = response.last == 1 ? data[user][:correct_answer_count] + 1 : 0
         else
           data[user] = {}
           data[user][:total_count] = 1
@@ -28,11 +28,9 @@ class SubjectsPerformance
         end
       end
       data.each do |id, data|
-        data[:subject_avg]= get_average(data[:correct_answer_count], data[:total_count])
-        
         subject_data << {
                          user_id: data[:user_id],
-                         average: data[:subject_avg]
+                         average: get_average(data[:correct_answer_count], data[:total_count])
                         }
      end
      user_sub_details[subject] = subject_data
