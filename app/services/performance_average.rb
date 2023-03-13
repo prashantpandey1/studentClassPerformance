@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-#  PerformanceAverage
+# This module provides method for calculating avergae performance
 module PerformanceAverage
-  def get_average(correct_responses, total_responses)
+  def calculate_performance_average(correct_responses, total_responses)
     ((correct_responses * 100).to_f / total_responses).round(2)
   end
 end

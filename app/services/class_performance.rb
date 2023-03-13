@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# ClassPerformance
+# A Service object that represents the performance of class based on quiz responses.
 class ClassPerformance
   include PerformanceAverage
 
@@ -18,19 +18,14 @@ class ClassPerformance
     tq_responses = test_quizzes.collect(&:responses).flatten
     tq_correct_responses = tq_responses.select(&:correct?)
 
-    {
-      total_quizzes_complted: @quizzes.count(&:completed?),
-      total_practice_quizes_completed: practice_quizes.length,
-      total_test_quizes_completed: test_quizzes.length,
-      total_responses: responses.length,
-      total_correct_responses: correct_responses.length,
-      total_practice_responses: pq_responses.length,
-      total_practice_correct_responses: pq_correct_responses.length,
-      total_test_responses: tq_responses.length,
+    { total_quizzes_complted: @quizzes.count(&:completed?), total_practice_quizes_completed: practice_quizes.length,
+      total_test_quizes_completed: test_quizzes.length, total_responses: responses.length,
+      total_correct_responses: correct_responses.length, total_practice_responses: pq_responses.length,
+      total_practice_correct_responses: pq_correct_responses.length, total_test_responses: tq_responses.length,
       total_test_correct_responses: tq_correct_responses.length,
-      total_average_percentage: get_average(correct_responses.length, responses.length),
-      practice_average_percentage: get_average(pq_correct_responses.length, pq_responses.length),
-      test_average_percentage: get_average(tq_correct_responses.length, tq_responses.length)
-    }
+      total_average_percentage: calculate_performance_average(correct_responses.length, responses.length),
+      practice_average_percentage: calculate_performance_average(pq_correct_responses.length, pq_responses.length),
+      test_average_percentage: calculate_performance_average(tq_correct_responses.length, tq_responses.length) }
   end
+  
 end
